@@ -93,8 +93,9 @@
     align-items: center;
     border: 1px solid var(--line);
     border-radius: 16px;
-    padding: 0 1rem;
-    gap: .4rem;
+    padding: 0 .8rem;
+    gap: .3rem;
+    min-width: 0;
   }
   .custom input {
     width: 100%;
@@ -185,6 +186,12 @@
   @keyframes breathe {
     from { opacity: .15; }
     to   { opacity: .8; }
+  }
+  /* Portrait: color is removed from the top, the edge travels downwards. */
+  #run.vertical #edge {
+    top: 0; left: 0; right: 0; bottom: auto;
+    width: auto; height: 4px;
+    margin-left: 0; margin-top: -2px;
   }
   #run.paused #edge { animation-play-state: paused; opacity: .2; }
   #run.done #edge, #run.done #fill { display: none; }
@@ -296,8 +303,12 @@
 
   <form class="custom" id="customForm" autocomplete="off">
     <label>
-      <input id="customMin" type="number" inputmode="numeric" min="1" max="240" step="1" placeholder="Other" aria-label="Custom minutes">
+      <input id="customMin" type="number" inputmode="numeric" min="0" max="240" step="1" placeholder="0" aria-label="Custom minutes">
       <span>min</span>
+    </label>
+    <label>
+      <input id="customSec" type="number" inputmode="numeric" min="0" max="59" step="1" placeholder="0" aria-label="Custom seconds">
+      <span>sec</span>
     </label>
     <button class="btn" type="submit">Start</button>
   </form>
@@ -462,13 +473,24 @@
   }
 
   // ---------- Drawing ----------
+  // Portrait (taller than wide): top -> bottom. Landscape: left -> right.
+  const portraitQuery = window.matchMedia('(orientation: portrait)');
+  let vertical = portraitQuery.matches;
+  function applyOrientation() {
+    vertical = portraitQuery.matches;
+    runEl.classList.toggle('vertical', vertical);
+    edgeEl.style.left = edgeEl.style.top = '';
+  }
+  applyOrientation();
+
   function draw(fraction) {
     const f = Math.max(0, Math.min(1, fraction));
     const cut = ((1 - f) * 100).toFixed(3) + '%';
-    // Color is removed from the left; the edge travels left -> right.
-    fillEl.style.clipPath = 'inset(0 0 0 ' + cut + ' round 26px)';
+    fillEl.style.clipPath = vertical
+      ? 'inset(' + cut + ' 0 0 0 round 26px)'
+      : 'inset(0 0 0 ' + cut + ' round 26px)';
     fillEl.style.webkitClipPath = fillEl.style.clipPath;
-    edgeEl.style.left = cut;
+    if (vertical) edgeEl.style.top = cut; else edgeEl.style.left = cut;
     edgeEl.style.visibility = f > 0 ? 'visible' : 'hidden';
     if (state.duration) drawClock(f * state.duration);
   }
@@ -513,11 +535,11 @@
   }
 
   // ---------- Actions ----------
-  function start(minutes) {
-    const m = Number(minutes);
-    if (!isFinite(m) || m <= 0) return;
+  function start(seconds) {
+    const sec = Number(seconds);
+    if (!isFinite(sec) || sec <= 0) return;
     unlockAudio(); // inside the tap gesture
-    state.duration = Math.round(Math.min(m, 240) * 60000);
+    state.duration = Math.round(Math.min(sec, 240 * 60) * 1000);
     state.endTime = Date.now() + state.duration;
     state.remaining = state.duration;
     state.status = 'running';
@@ -580,18 +602,22 @@
 
   // ---------- Start screen events ----------
   document.querySelectorAll('.presets .btn').forEach((b) => {
-    b.addEventListener('click', () => start(b.dataset.min));
+    b.addEventListener('click', () => start(Number(b.dataset.min) * 60));
   });
-  const customInput = $('customMin');
-  const lastCustom = store.get('tt-custom');
-  if (lastCustom) customInput.value = lastCustom;
+  const minInput = $('customMin'), secInput = $('customSec');
+  try {
+    const last = JSON.parse(store.get('tt-custom2') || 'null');
+    if (last) { if (last.m) minInput.value = last.m; if (last.s) secInput.value = last.s; }
+  } catch (e) {}
   $('customForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    const v = parseFloat(customInput.value);
-    if (!(v > 0)) { customInput.focus(); return; }
-    store.set('tt-custom', String(v));
-    customInput.blur();
-    start(v);
+    const m = Math.max(0, Math.floor(Number(minInput.value) || 0));
+    const s = Math.max(0, Math.floor(Number(secInput.value) || 0));
+    const total = m * 60 + s;
+    if (!(total > 0)) { minInput.focus(); return; }
+    store.set('tt-custom2', JSON.stringify({ m, s }));
+    minInput.blur(); secInput.blur();
+    start(total);
   });
 
   // ---------- Running screen: hidden controls ----------
@@ -649,9 +675,12 @@
     }
   });
   // Redraw immediately on rotation/resize (the bar uses % so it adapts itself).
-  window.addEventListener('resize', () => {
+  function onLayoutChange() {
+    applyOrientation();
     if (state.status === 'running' || state.status === 'paused') draw(remainingMs() / state.duration);
-  });
+  }
+  window.addEventListener('resize', onLayoutChange);
+  if (portraitQuery.addEventListener) portraitQuery.addEventListener('change', onLayoutChange);
 
   // ---------- Restore a timer if the browser reloaded the page ----------
   try {
