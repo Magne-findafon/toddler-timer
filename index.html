@@ -3,8 +3,42 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Toddler Timer</title>
-<meta name="description" content="A calm visual timer for small children. Less color = less time. Free, no ads, no account.">
+<title>Toddler Timer – a calm visual timer for toddlers</title>
+<meta name="description" content="A calm visual timer for toddlers aged 2–3. A bar of soft color shrinks as time passes: less color, less time. No numbers, no sounds, no ads, free.">
+<link rel="canonical" href="https://notyet.page/">
+
+<!-- Open Graph / social sharing -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Toddler Timer">
+<meta property="og:url" content="https://notyet.page/">
+<meta property="og:title" content="Toddler Timer – a calm visual timer for toddlers">
+<meta property="og:description" content="Less color, less time. A quiet visual timer for children who can't read a clock yet. Free, no ads, no account.">
+<meta property="og:image" content="https://notyet.page/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="A muted sage-green bar on a dark background, partly emptied, with the text Toddler Timer: less color, less time.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Toddler Timer – a calm visual timer for toddlers">
+<meta name="twitter:description" content="Less color, less time. A quiet visual timer for children who can't read a clock yet.">
+<meta name="twitter:image" content="https://notyet.page/og-image.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Toddler Timer",
+  "url": "https://notyet.page/",
+  "description": "A calm visual timer for toddlers aged 2–3. A bar of soft color shrinks as time passes: less color, less time. No numbers, no sounds by default, no ads.",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Any (runs in a web browser)",
+  "browserRequirements": "Requires JavaScript",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "image": "https://notyet.page/og-image.png",
+  "audience": { "@type": "PeopleAudience", "audienceType": "Parents of toddlers" },
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+}
+</script>
 <meta name="theme-color" content="#111111">
 <meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -142,6 +176,34 @@
   .toggle[aria-checked="true"] .track::after { transform: translateX(16px); background: #d7ddd7; }
   .settings { display: flex; flex-direction: column; align-items: flex-start; gap: .35rem; }
   footer { font-size: .75rem; color: #4d524e; max-width: 320px; line-height: 1.5; }
+  footer a { color: var(--text-dim); }
+
+  /* ---------- About & FAQ (below the start screen) ---------- */
+  #about {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 3rem 1.25rem max(4rem, env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(255,255,255,.06);
+    color: var(--text-dim);
+    font-size: .95rem;
+    line-height: 1.6;
+  }
+  #about h2 { font-size: .8rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--text); margin: 2.2rem 0 .8rem; }
+  #about h2:first-child { margin-top: 0; }
+  #about p { margin: 0 0 .9rem; }
+  #about strong { color: var(--text); font-weight: 500; }
+  #about details { border-bottom: 1px solid rgba(255,255,255,.06); }
+  #about summary {
+    cursor: pointer;
+    list-style: none;
+    padding: .9rem 1.6rem .9rem 0;
+    color: var(--text);
+    position: relative;
+  }
+  #about summary::-webkit-details-marker { display: none; }
+  #about summary::after { content: "+"; position: absolute; right: .2rem; top: .85rem; color: var(--text-dim); }
+  #about details[open] summary::after { content: "–"; }
+  #about details p { padding-bottom: .4rem; }
 
   /* ---------- Running screen ---------- */
   #run {
@@ -326,9 +388,45 @@
 
   <footer>
     Tap the screen while it runs to pause. Hold “Stop” to end early.<br>
-    Free · no ads · no account · nothing leaves your device.
+    Free · no ads · no account · no cookies · <a href="#about">About &amp; FAQ</a>
   </footer>
 </main>
+
+<section id="about" aria-labelledby="about-title">
+  <h2 id="about-title">About</h2>
+  <p>Toddler Timer is a visual timer for children around 2–3 years old who can't read a clock yet. You choose the time; your child sees a bar of soft color that slowly shrinks. When the color is gone, the time is up. <strong>Less color, less time.</strong></p>
+  <p>It's made for families who keep screens to a minimum, so it behaves more like a lamp or an hourglass than an app: nothing to watch, nothing to play with, nothing to tap.</p>
+
+  <h2>FAQ</h2>
+  <details>
+    <summary>How do I use it?</summary>
+    <p>Tap 5, 10, 15 or 30 minutes, or type your own minutes and seconds and press Start. Put the phone or tablet where your child can see it. Tap the screen to pause; hold “Stop” for about 1.5 seconds to end early, so a curious toddler can't stop it by accident.</p>
+  </details>
+  <details>
+    <summary>Why are there no numbers or sounds?</summary>
+    <p>Small children understand “how much is left” better than numbers. The small time display in the corner is for you, and you can switch it off. A soft chime at the end is available but off by default.</p>
+  </details>
+  <details>
+    <summary>Will the screen stay on?</summary>
+    <p>Yes, in modern browsers (iPhone and iPad with iOS 16.4 or newer, Android Chrome, desktop Chrome and Edge). For long timers, plug the device in.</p>
+  </details>
+  <details>
+    <summary>Does it keep time if I lock the phone or switch apps?</summary>
+    <p>Yes. The timer follows the real clock, so when you come back the bar shows exactly how much time is left.</p>
+  </details>
+  <details>
+    <summary>Can I add it to my home screen?</summary>
+    <p>On iPhone or iPad: tap Share, then “Add to Home Screen”. On Android: open the browser menu and choose “Add to Home screen” or “Install app”. It then opens full-screen without browser bars.</p>
+  </details>
+  <details>
+    <summary>What can I use it for?</summary>
+    <p>Everyday transitions: “when the green is gone, it's time for bed”, taking turns with a toy, waiting for dinner, tidying up, or the end of play time.</p>
+  </details>
+  <details>
+    <summary>Is it free? Do you collect any data?</summary>
+    <p>It's free, with no ads and no account. There are no cookies. We count anonymous page visits with Cloudflare Web Analytics, which doesn't track you across websites. Your settings (sound, time display, last custom time) are stored only in your own browser.</p>
+  </details>
+</section>
 
 <section id="run" hidden aria-label="Timer running">
   <div id="bar">
@@ -523,14 +621,18 @@
   }
 
   // ---------- Screens ----------
+  const aboutEl = $('about');
   function showRun() {
     startEl.hidden = true;
+    aboutEl.hidden = true;
+    window.scrollTo(0, 0);
     runEl.hidden = false;
     runEl.classList.remove('done', 'paused', 'show-controls');
   }
   function showStart() {
     runEl.hidden = true;
     startEl.hidden = false;
+    aboutEl.hidden = false;
     runEl.classList.remove('done', 'paused', 'show-controls');
   }
 
